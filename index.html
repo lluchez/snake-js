@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Snake</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+    <script type="text/javascript" src="app.js"></script>
+    <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div id="splash-screen" class="hidden">
+      <div class="overlay"></div>
+      <div class="wrapper">
+        <div class="game-over-panel" style="display: none;">
+          <div class="game-over-title">Game Over</div>
+          <div class="game-over-score-row">Your score: <span class="score"></span></div>
+        </div>
+        <div class="options">
+          <div class="options-title">Options</div>
+          <div class="options-grid">
+            <label for="board-size">Board size</label>
+            <select id="board-size"></select>
+            <label for="game-speed">Game speed <i>(in ms)</i></label>
+            <input id="game-speed" type="number" value="150" placeholder="Time in ms" />
+          </div>
+        </div>
+        <div class="footer">
+          <button>Play Snake</button>
+        </div>
+      </div>
+    </div>
+    <div class="game">
+      <div class="padding-before"></div>
+      <div class="score-row">
+        <label>Score</label>
+        <span class="score">0</span>
+      </div>
+      <div id="grid"></div>
+      <div class="padding-after"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,233 @@
+:root {
+  --color: #007bff;
+  --color-hover: #0069d9;
+  --score-height: 26px;
+}
+
+html, body {
+  height: 100%;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button {
+  color: white;
+  background-color: var(--color);
+  border-color: var(--color);
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: .375rem .75rem;
+  border-radius: .25rem;
+  transition: color .15s;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--color-hover);
+  border-color: var(--color-hover);
+}
+
+input, select {
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  transition: border-color .15s;
+}
+
+
+/* - - - - - Splash Screen - - - - - */
+#splash-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  opacity: 1;
+  transition: opacity .2s ease-in-out;
+}
+
+#splash-screen .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(128,128,128,0.5);
+}
+
+#splash-screen .wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid black;
+  border-radius: .25em;
+  background-color: white;
+  box-shadow: 5px 5px rgba(128,128,128,.5);
+  transition: transform .2s ease-in-out;
+}
+
+#splash-screen .wrapper .game-over-panel {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+#splash-screen .wrapper .game-over-panel .game-over-title {
+  font-size: 2rem;
+  font-weight: bold;
+  padding: 4px 0 8px;
+  color: var(--color);
+  text-transform: capitalize;
+}
+
+#splash-screen .wrapper .game-over-panel .game-over-score-row {
+  font-weight: bold;
+}
+
+#splash-screen .wrapper .options .options-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  padding: 4px 0 8px;
+  color: var(--color);
+}
+
+#splash-screen .wrapper .options .options-grid {
+  display: grid;
+  grid-template-columns: min-content 100px;
+  margin: 8px;
+}
+
+#splash-screen .wrapper .options .options-grid > * {
+  margin-bottom: 2px;
+  margin-top: 2px;
+}
+
+#splash-screen .wrapper .options .options-grid label {
+  padding-top: .375rem;
+  padding-bottom: .375rem;
+  margin-bottom: 0;
+  line-height: 1.5;
+  border-width: 1px 0;
+  white-space: nowrap;
+}
+
+#splash-screen .wrapper .options .options-grid label:after {
+  content: ':';
+  display: inline-block;
+  margin-right: 16px;
+}
+
+#splash-screen .wrapper .footer {
+  text-align: center;
+}
+
+#splash-screen .wrapper .footer button {
+  margin: 8px;
+}
+
+#splash-screen.hidden {
+  opacity: 0;
+}
+
+#splash-screen.hidden .wrapper {
+  transform: translate(-50%, -500%);
+}
+
+
+/* - - - - - Game / Grid - - - - - */
+.game {
+  display: grid;
+  margin: 0 auto;
+  width: 100vw;
+  height: 100vh;
+  border: 0;
+}
+
+.score-row {
+  grid-area: score;
+  position: relative;
+  color: var(--color);
+  font-weight: bold;
+}
+
+.score-row > * {
+  display: inline-block;
+  margin: 4px;
+}
+
+.score-row .score {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#grid {
+  grid-area: board;
+  display: grid;
+  border: 1px solid black;
+  width: 100%;
+  height: 100%;
+}
+
+#grid > .snake {
+  background-color: black;
+}
+
+#grid > .apple {
+  background-color: green;
+  border-radius: 100vh;
+}
+
+.padding-before {
+  grid-area: padding-before;
+}
+
+.padding-after {
+  grid-area: padding-after;
+}
+
+
+@media (orientation: landscape) {
+  .game {
+    grid-template-areas:
+      "padding-before score padding-after"
+      "padding-before board padding-after";
+    grid-template-rows: var(--score-height) auto;
+    grid-template-columns: auto calc(100vh - var(--score-height)) auto;
+  }
+}
+
+@media (orientation: portrait) {
+  .game {
+    grid-template-areas:
+      "padding-before"
+      "score"
+      "board"
+      "padding-after";
+    grid-template-rows: auto var(--score-height) 100vw auto;
+  }
+}
+
+@media (max-width: 768px) {
+  #grid {
+    background: url('split.png') no-repeat center;
+    background-size: cover;
+  }
+}
