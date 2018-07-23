@@ -32,14 +32,23 @@ class Point {
     const {x, y, size} = this;
     return ( x < 0 || x >= size || y < 0 || y >= size);
   }
+
+  equals(otherPoint) {
+    return (this.x === otherPoint.x) && (this.y === otherPoint.y)
+  }
+
+  toString() {
+    return `X: ${this.x}, Y: ${this.y}`
+  }
 }
 
 
 // - - - - - Snake Class - - - - - //
 class Snake {
   constructor(settings = {}) {
-    this.rebind()
+    this.rebind();
     this.settings = this.initSettings(settings);
+    this.pointOptions = this.getPointOptions();
     this.gridElement = this.initGrid();
     this.board = this.initBoard();
     this.snake = [];
@@ -65,7 +74,7 @@ class Snake {
     if( this.settings.version.toString() === '2' )
       return {wrap: true};
     else
-      return {validate: true};
+      return {validates: true};
   }
 
   rebind() {
@@ -152,12 +161,15 @@ class Snake {
     this.paused = false;
   }
 
-  handleMoveHeadAction(point) {
+  handleMoveHeadAction() {
     const newHeadPoint = this.nextHeadPosition();
     const cellValue = this.boardValue(newHeadPoint);
-    if( cellValue === CELL_SNAKE )
-      throw 'Eating itself';
-    if( cellValue === CELL_APPLE ) {
+    if( cellValue === CELL_SNAKE ) {
+      const tail = this.snake.pop();
+      if( !tail.equals(newHeadPoint) )
+        throw 'Eating itself';
+      this.snake.unshift(tail);
+    } else if( cellValue === CELL_APPLE ) {
       this.setScore(this.score + 1);
       this.apple = this.generateApple();
       this.moveSnake(newHeadPoint, false);
@@ -175,18 +187,16 @@ class Snake {
   }
 
   nextHeadPosition() {
-    const pointOptions = this.getPointOptions();
-
     const {x, y} = this.snake[0];
     switch(this.direction) {
       case DIRECTION_UP:
-        return this.newPoint(x, y - 1, pointOptions);
+        return this.newPoint(x, y - 1, this.pointOptions);
       case DIRECTION_RIGHT:
-        return this.newPoint(x + 1, y, pointOptions);
+        return this.newPoint(x + 1, y, this.pointOptions);
       case DIRECTION_DOWN:
-        return this.newPoint(x, y + 1, pointOptions);
+        return this.newPoint(x, y + 1, this.pointOptions);
       case DIRECTION_LEFT:
-        return this.newPoint(x - 1, y, pointOptions);
+        return this.newPoint(x - 1, y, this.pointOptions);
       default:
         throw `Direction is invalid: ${this.direction}`;
     }
