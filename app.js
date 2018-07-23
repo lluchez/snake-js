@@ -11,12 +11,17 @@ const DIRECTION_CODES = [DIRECTION_UP, DIRECTION_RIGHT, DIRECTION_DOWN, DIRECTIO
 
 // - - - - - Point Class - - - - - //
 class Point {
-  constructor(x, y, size, validates = false) {
-    this.x = x;
-    this.y = y;
+  constructor(x, y, size, options) {
+    const {validates, wrap} = (options || {})
     this.size = size;
-    if( validates && this.isOutOfBounds() )
+    this.x = wrap ? this.wrap(x) : x;
+    this.y = wrap ? this.wrap(y) : y;
+    if( options.validates && this.isOutOfBounds() )
       throw 'Out of bounds';
+  }
+
+  wrap(value) {
+    return (value + this.size) % this.size;
   }
 
   getIndex() {
@@ -50,9 +55,17 @@ class Snake {
     return {
       columns: 10,
       interval: 150,
+      version: 1,
       onGameOver: null,
       ...settings
     }
+  }
+
+  getPointOptions() {
+    if( this.settings.version.toString() === '2' )
+      return {wrap: true};
+    else
+      return {validate: true};
   }
 
   rebind() {
@@ -67,7 +80,6 @@ class Snake {
     grid.style.gridTemplateRows = `repeat(${columns}, 1fr)`;
     for(let i = 0; i < nbCols; i++) {
       const node = document.createElement('div');
-      // node.addEventListener('click', e => console.log('node clicked'));
       grid.appendChild(node);
     }
     document.addEventListener('click', this.onClick);
@@ -83,8 +95,10 @@ class Snake {
   }
 
   initSnake() {
+    const {columns} = this.settings;
+    const y = columns - 2;
     for(let i = 1; i < 4; i++)
-      this.addSnakeHead(this.newPoint(i, 7));
+      this.addSnakeHead(this.newPoint(i, y));
     this.direction = DIRECTION_RIGHT;
   }
 
@@ -161,16 +175,18 @@ class Snake {
   }
 
   nextHeadPosition() {
+    const pointOptions = this.getPointOptions();
+
     const {x, y} = this.snake[0];
     switch(this.direction) {
       case DIRECTION_UP:
-        return this.newPoint(x, y - 1, true);
+        return this.newPoint(x, y - 1, pointOptions);
       case DIRECTION_RIGHT:
-        return this.newPoint(x + 1, y, true);
+        return this.newPoint(x + 1, y, pointOptions);
       case DIRECTION_DOWN:
-        return this.newPoint(x, y + 1, true);
+        return this.newPoint(x, y + 1, pointOptions);
       case DIRECTION_LEFT:
-        return this.newPoint(x - 1, y, true);
+        return this.newPoint(x - 1, y, pointOptions);
       default:
         throw `Direction is invalid: ${this.direction}`;
     }
@@ -193,8 +209,8 @@ class Snake {
     this.markCell(point, CELL_SNAKE);
   }
 
-  newPoint(x, y, validates) {
-    return new Point(x, y, this.settings.columns, validates);
+  newPoint(x, y, options = {}) {
+    return new Point(x, y, this.settings.columns, options);
   }
 
   boardValue(point) {
@@ -260,6 +276,7 @@ function onPlayGameClick(e) {
   const settings = {
     columns: getInputValue(document.getElementById('board-size')),
     interval: getInputValue(document.getElementById('game-speed')),
+    version: getInputValue(document.getElementById('game-version')),
     onGameOver: onGameOver
   };
   const snake = new Snake(settings);
