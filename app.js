@@ -8,6 +8,13 @@ const DIRECTION_DOWN  = 'ArrowDown';
 const DIRECTION_LEFT  = 'ArrowLeft';
 const DIRECTION_CODES = [DIRECTION_UP, DIRECTION_RIGHT, DIRECTION_DOWN, DIRECTION_LEFT]
 
+const REVERSE_DIRECTIONS = {
+  [DIRECTION_UP]: DIRECTION_DOWN,
+  [DIRECTION_DOWN]: DIRECTION_UP,
+  [DIRECTION_RIGHT]: DIRECTION_LEFT,
+  [DIRECTION_LEFT]: DIRECTION_RIGHT
+}
+
 
 // - - - - - Point Class - - - - - //
 class Point {
@@ -127,7 +134,8 @@ class Snake {
     const code = e.code;
     if( DIRECTION_CODES.includes(code) ) {
       e.preventDefault();
-      this.updateDirection(code);
+      if( code !== REVERSE_DIRECTIONS[this.direction] )
+        this.updateDirection(code);
     } else if( code === 'Space' ) {
       this.paused = !this.paused;
     }
